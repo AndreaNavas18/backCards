@@ -1,9 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const verifyToken = require('../middlewares/authMiddleware');
+import { Router } from 'express';
+import verifyToken from '../middlewares/authMiddleware';
+import checkPermission from '../middlewares/checkPermission.js';
+const router = Router();
 
 router.get('/home', verifyToken, (req, res) => {
   res.status(200).send({ message: 'Bienvenido a Digitals Cards' });
 });
 
-module.exports = router;
+router.get('/home-admin', verifyToken, checkPermission('verinicioadmin'), (req, res) => {
+  res.json({ message: 'Datos de administración accesibles' });
+});
+
+export default router;

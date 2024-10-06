@@ -1,14 +1,14 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const config = require('../../config/config');
-const prisma = require('@prisma/client');
+import { sign } from 'jsonwebtoken';
+import { hash, compareSync } from 'bcryptjs';
+import { secret, expiresIn as _expiresIn } from '../../config/config';
+import { PrismaClient } from '@prisma/client';
 
-const prismaClient = new prisma.PrismaClient();
+const prismaClient = new PrismaClient();
 
 //Registro interno 
-exports.register = async (req, res) => {
+export async function register(req, res) {
     const { username, password, role } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 8);
+    const hashedPassword = await hash(password, 8);
   
     try {
       const user = await prismaClient.user.create({
@@ -22,10 +22,10 @@ exports.register = async (req, res) => {
     } catch (error) {
       res.status(500).send({ message: 'Error al registrar usuario.' });
     }
-  };
+  }
 
   // Login de usuario
-exports.login = async (req, res) => {
+export async function login(req, res) {
     const { username, password } = req.body;
   
     try {
@@ -37,15 +37,15 @@ exports.login = async (req, res) => {
         return res.status(404).send({ message: 'Usuario no encontrado.' });
       }
   
-      const passwordIsValid = bcrypt.compareSync(password, user.password);
+      const passwordIsValid = compareSync(password, user.password);
   
       if (!passwordIsValid) {
         return res.status(401).send({ message: 'Contraseña incorrecta.' });
       }
   
       // Crea un token JWT
-      const token = jwt.sign({ id: user.id, role: user.role }, config.secret, {
-        expiresIn: config.expiresIn,
+      const token = sign({ id: user.id, role: user.role }, secret, {
+        expiresIn: _expiresIn,
       });
   
       res.status(200).send({
@@ -57,4 +57,4 @@ exports.login = async (req, res) => {
     } catch (error) {
       res.status(500).send({ message: 'Error al iniciar sesión.' });
     }
-  };
+  }

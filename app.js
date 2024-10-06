@@ -1,12 +1,12 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const authRoutes = require('./src/routes/authRoutes');
-const protectedRoutes = require('./src/routes/protectedRoutes');
-const cors = require('cors');
+import express from 'express';
+import { json } from 'body-parser';
+import authRoutes from './src/routes/authRoutes';
+import protectedRoutes from './src/routes/protectedRoutes';
+import cors from 'cors';
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(json());
 
 app.use(cors());
 

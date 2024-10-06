@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const config = require('../config/config');
+import { verify } from 'jsonwebtoken';
+import { secret } from '../config/config';
 
 //Middleware de autenticación
 const verifyToken = (req, res, next) => {
@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
     if(!token) return res.status(403).json({message: 'Token no proporcionado'});
     
     const bearerToken = token.split(' ')[1]; 
-    jwt.verify(bearerToken, config.secret, (err, decoded) => {
+    verify(bearerToken, secret, (err, decoded) => {
         if(err) return res.status(401).json({message: 'Token inválido'});
 
         //Guardo los datos del usuario en el request
@@ -18,4 +18,4 @@ const verifyToken = (req, res, next) => {
     });
 }
 
-module.exports = verifyToken;
+export default verifyToken;
