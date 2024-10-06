@@ -1,13 +1,12 @@
 import express from 'express';
-import { json } from 'body-parser';
-import authRoutes from './src/routes/authRoutes';
-import protectedRoutes from './src/routes/protectedRoutes';
+import bodyParser from 'body-parser';
+import authRoutes from './src/routes/authRoutes.js';
+import protectedRoutes from './src/routes/protectedRoutes.js';
 import cors from 'cors';
 
 const app = express();
 
-app.use(json());
-
+app.use(bodyParser.json());
 app.use(cors());
 
 // Rutas

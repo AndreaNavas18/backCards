@@ -1,6 +1,7 @@
-import { sign } from 'jsonwebtoken';
-import { hash, compareSync } from 'bcryptjs';
-import { secret, expiresIn as _expiresIn } from '../../config/config';
+import jsonwebtoken from 'jsonwebtoken';
+const { sign } = jsonwebtoken;
+import bcrypt from 'bcrypt';
+import { secret, expiresIn as _expiresIn } from '../../config/config.js';
 import { PrismaClient } from '@prisma/client';
 
 const prismaClient = new PrismaClient();
@@ -8,7 +9,7 @@ const prismaClient = new PrismaClient();
 //Registro interno 
 export async function register(req, res) {
     const { username, password, role } = req.body;
-    const hashedPassword = await hash(password, 8);
+    const hashedPassword = await bcrypt.hash(password, 8);
   
     try {
       const user = await prismaClient.user.create({
@@ -37,7 +38,7 @@ export async function login(req, res) {
         return res.status(404).send({ message: 'Usuario no encontrado.' });
       }
   
-      const passwordIsValid = compareSync(password, user.password);
+      const passwordIsValid = bcrypt.compareSync(password, user.password);
   
       if (!passwordIsValid) {
         return res.status(401).send({ message: 'Contraseña incorrecta.' });

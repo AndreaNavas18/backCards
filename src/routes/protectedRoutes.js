@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import verifyToken from '../middlewares/authMiddleware';
+import verifyToken from '../middlewares/authMiddleware.js';
 import checkPermission from '../middlewares/checkPermission.js';
 const router = Router();
 

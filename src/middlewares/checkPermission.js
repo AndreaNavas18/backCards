@@ -1,4 +1,4 @@
-import prisma from '../prismaClient.js';
+import { PrismaClient } from '@prisma/client';
 
 const checkPermission = (requiredPermission) => {
   return async (req, res, next) => {
@@ -6,7 +6,7 @@ const checkPermission = (requiredPermission) => {
       const userId = req.userId;
 
       // Obtener el usuario y sus roles y permisos
-      const user = await prisma.user.findUnique({
+      const user = await PrismaClient.user.findUnique({
         where: { id: userId },
         include: {
           role: {

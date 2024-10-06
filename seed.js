@@ -5,47 +5,63 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Crear o actualizar roles
-  await prisma.role.upsert({
+  const adminRole = await prisma.role.upsert({
     where: { name: 'Admin' },
     update: {},
     create: { name: 'Admin' }
   });
 
-  await prisma.role.upsert({
+  console.log('Admin Role:', adminRole);
+
+  const userRole = await prisma.role.upsert({
     where: { name: 'User' },
     update: {},
     create: { name: 'User' }
   });
 
-  await prisma.role.upsert({
+  console.log('User Role:', userRole);
+
+  const clienteRole = await prisma.role.upsert({
     where: { name: 'Cliente' },
     update: {},
     create: { name: 'Cliente' }
   });
 
-  // Obtener IDs de roles para usarlos en los permisos
-  const adminRole = await prisma.role.findUnique({ where: { name: 'Admin' } });
-  const userRole = await prisma.role.findUnique({ where: { name: 'User' } });
-  const clienteRole = await prisma.role.findUnique({ where: { name: 'Cliente' } });
+  console.log('Cliente Role:', clienteRole);
 
   // Crear o actualizar permisos usando los IDs de los roles
   await prisma.permission.upsert({
     where: { action: 'verinicioadmin' },
     update: {},
-    create: { action: 'verinicioadmin', roleId: adminRole.id },
+    create: { 
+      action: 'verinicioadmin', 
+      roles: {connect: { id: adminRole.id }},
+    },
   });
+
+  console.log('Admin Permission:', adminPermission);
 
   await prisma.permission.upsert({
     where: { action: 'veriniciouser' },
     update: {},
-    create: { action: 'veriniciouser', roleId: userRole.id },
+    create: { 
+      action: 'veriniciouser', 
+      roles: {connect: { id: userRole.id }},
+    },
   });
+
+  console.log('User Permission:', userPermission);
 
   await prisma.permission.upsert({
     where: { action: 'veriniciocliente' },
     update: {},
-    create: { action: 'veriniciouser', roleId: clienteRole.id },
+    create: { 
+      action: 'veriniciouser', 
+      roles: {connect: {id: clienteRole.id}},
+    },
   });
+
+  console.log('Cliente Permission:', clientePermission);
   
   await prisma.user.update({
     where: { username: 'jhony' },

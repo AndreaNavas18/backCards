@@ -1,5 +1,6 @@
-import { verify } from 'jsonwebtoken';
-import { secret } from '../config/config';
+import jsonwebtoken from 'jsonwebtoken';
+const { verify } = jsonwebtoken;
+import { secret } from '../config/config.js';
 
 //Middleware de autenticación
 const verifyToken = (req, res, next) => {
